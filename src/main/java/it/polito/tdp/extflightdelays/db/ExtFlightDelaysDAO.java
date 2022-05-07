@@ -119,11 +119,13 @@ public class ExtFlightDelaysDAO {
 		}
 	}
 	
-	public List<Integer> loadAllDistancesBetweenTheseAirports(Airport partenza, Airport arrivo) {
-		String sql = "SELECT DISTANCE FROM flights WHERE ORIGIN_AIRPORT_ID=? AND DESTINATION_AIRPORT_ID=? "
+	public double AverageBetweenTheseAirports(Airport partenza, Airport arrivo) {
+		String sql = "SELECT AVG(DISTANCE) AS media "
+				+ "FROM flights "
+				+ "WHERE ORIGIN_AIRPORT_ID=? AND DESTINATION_AIRPORT_ID=? "
 				+ "OR ORIGIN_AIRPORT_ID=? AND DESTINATION_AIRPORT_ID=?";
 		
-		List<Integer> result = new LinkedList<Integer>();
+		double result = 0;
 
 		try {
 			Connection conn = ConnectDB.getConnection();
@@ -134,10 +136,10 @@ public class ExtFlightDelaysDAO {
 			st.setInt(3, arrivo.getId());
 			ResultSet rs = st.executeQuery();
 
-			while (rs.next()) {
-				result.add(rs.getInt("DISTANCE"));
-			}
-
+			rs.first();
+			
+			result = rs.getDouble("media");
+			
 			conn.close();
 			return result;
 

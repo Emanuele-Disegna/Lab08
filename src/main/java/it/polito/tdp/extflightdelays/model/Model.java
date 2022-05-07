@@ -25,7 +25,7 @@ public class Model {
 			for(Airport arrivo : aeroporti) {
 				if(!grafo.containsEdge(arrivo, partenza)) {
 					if(dao.isCollegati(partenza, arrivo)) {
-						double media = getMedia(dao.loadAllDistancesBetweenTheseAirports(partenza, arrivo));
+						double media = dao.AverageBetweenTheseAirports(partenza, arrivo);
 						if(media>distanzaMinima) {
 							Graphs.addEdge(grafo, partenza, arrivo, media);
 						}
@@ -38,12 +38,4 @@ public class Model {
 		return grafo;
 	}
 	
-	private double getMedia(List<Integer> distanze) {
-		double somma = 0;
-		
-		for(Integer i : distanze)
-			somma += i;
-		
-		return somma/distanze.size();
-	}
 }

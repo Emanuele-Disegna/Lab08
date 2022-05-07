@@ -39,7 +39,6 @@ public class FXMLController {
 
     @FXML
     void doAnalizzaAeroporti(ActionEvent event) {
-    	//TODO
     	txtResult.clear();
     	String dist = distanzaMinima.getText();
     	int distNum;
