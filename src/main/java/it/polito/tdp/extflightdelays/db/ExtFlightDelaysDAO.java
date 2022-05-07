@@ -91,4 +91,60 @@ public class ExtFlightDelaysDAO {
 			throw new RuntimeException("Error Connection Database");
 		}
 	}
+	
+	public boolean isCollegati(Airport partenza, Airport arrivo) {
+		String sql = "SELECT COUNT(*) AS CNT FROM flights WHERE ORIGIN_AIRPORT_ID=? AND DESTINATION_AIRPORT_ID=?";
+		boolean ret = false;
+
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, partenza.getId());
+			st.setInt(2, arrivo.getId());
+			ResultSet rs = st.executeQuery();
+			
+			rs.first();
+			
+			if(rs.getInt("CNT")>0) {
+				ret = true;
+			}
+
+			conn.close();
+			return ret;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+	}
+	
+	public List<Integer> loadAllDistancesBetweenTheseAirports(Airport partenza, Airport arrivo) {
+		String sql = "SELECT DISTANCE FROM flights WHERE ORIGIN_AIRPORT_ID=? AND DESTINATION_AIRPORT_ID=? "
+				+ "OR ORIGIN_AIRPORT_ID=? AND DESTINATION_AIRPORT_ID=?";
+		
+		List<Integer> result = new LinkedList<Integer>();
+
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, partenza.getId());
+			st.setInt(2, arrivo.getId());
+			st.setInt(4, partenza.getId());
+			st.setInt(3, arrivo.getId());
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				result.add(rs.getInt("DISTANCE"));
+			}
+
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+	}
 }
